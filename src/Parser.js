@@ -1,14 +1,15 @@
-import TurnLeftCommand from "./Command/TurnLeftCommand";
-import TurnRightCommand from "./Command/TurnRightCommand";
-import MoveForwardCommand from "./Command/MoveForwardCommand";
+import CommandFactory from "./Command/CommandFactory";
+import DirectionFactory from "./Direction/DirectionFactory";
 import debugLib from "debug";
 
 const debug = debugLib("Parser");
 
 class Parser {
     constructor (txtStr) {
-        const res = this.parseTxt(txtStr) || {};
+        this.cmdFactory = new CommandFactory();
+        this.dirFactory = new DirectionFactory();
 
+        const res = this.parseTxt(txtStr) || {};
         this.gridBoundary = res.gridBoundary || {};
         this.roversData = res.roversData || [];
     }
@@ -47,37 +48,21 @@ class Parser {
 
         // get list of rover input data like pos, direction, commands
         for (let i=1, len=lines.length; i<len; i=i+2) {
-            let [x, y, direction] = lines[i].split(" ");
-            let cmds = this._parseCmdsStr(lines[i+1]);
+            let [x, y, directionStr] = lines[i].split(" ");
+            let cmdsStr = lines[i+1];
 
-            debug(x, y, direction, lines[i+1]);
+            debug(x, y, directionStr, cmdsStr);
             res.roversData.push({
                 pos: {
                     x: parseInt(x, 10) || 0,
                     y: parseInt(y, 10) || 0
                 },
-                direction: direction,
-                cmds: cmds
+                direction: this.dirFactory.createDir(directionStr),
+                cmds: this.cmdFactory.createCmds(cmdsStr)
             });
         }
 
         return res;
-    }
-
-    _parseCmdsStr (cmdsStr) {
-        let cmds = [];
-
-        cmdsStr.split("").map((cmd) => {
-            if (cmd === "L") {
-                cmds.push(new TurnLeftCommand());
-            } else if (cmd === "R") {
-                cmds.push(new TurnRightCommand());
-            } else if (cmd === "M") {
-                cmds.push(new MoveForwardCommand());
-            }
-        });
-
-        return cmds;
     }
 
     getGridBoundary () {

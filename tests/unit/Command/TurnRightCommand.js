@@ -6,6 +6,8 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-Chai';
 import TurnRightCommand from '../../../src/Command/TurnRightCommand';
 
+chai.use(sinonChai);
+
 describe('TurnRightCommand', () => {
     const turnRightCommand = new TurnRightCommand();
     const rover = {

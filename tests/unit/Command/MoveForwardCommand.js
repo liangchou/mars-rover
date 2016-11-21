@@ -6,6 +6,8 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-Chai';
 import MoveForwardCommand from '../../../src/Command/MoveForwardCommand';
 
+chai.use(sinonChai);
+
 describe('MoveForwardCommand', () => {
     const moveForwardCommand = new MoveForwardCommand();
     const rover = {

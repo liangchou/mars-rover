@@ -1,30 +1,13 @@
+import NorthDirection from "./Direction/NorthDirection";
 import debugLib from "debug";
 
 const debug = debugLib("Rover");
-const rotateMap = {
-    N: {
-        L: "W",   // North -> turn Left -> West
-        R: "E"
-    },
-    E: {
-        L: "N",
-        R: "S"
-    },
-    S: {
-        L: "E",
-        R: "W"
-    },
-    W: {
-        L: "S",
-        R: "N"
-    }
-};
 
 class Rover {
     constructor (x, y, direction, grid) {
         this.x = x || 0;
         this.y = y || 0;
-        this.direction = direction || "N";
+        this.direction = direction || new NorthDirection();
         this.grid = grid || { 
             isOutBoundary: () => { return true; }
         };
@@ -38,41 +21,46 @@ class Rover {
     }
 
     turnLeft () {
-        this.direction = rotateMap[this.direction]["L"];
+        this.direction = this.direction.turnLeft();
     }
 
     turnRight () {
-        this.direction = rotateMap[this.direction]["R"];
+        this.direction = this.direction.turnRight();
     }
 
     moveForward () {
-        let [newX, newY] = [this.x, this.y];
+        this.direction.moveForward(this);
+    }
 
-        if (this.direction === "N") {
-            newY = newY + 1;
-        } else if (this.direction === "E") {
-            newX = newX + 1;
-        } else if (this.direction === "S") {
-            newY = newY - 1;
-        } else if (this.direction === "W") {
-            newX = newX - 1;
-        }
-
-        // move forward only if it's not out of grid boundary
-        if (!this.grid.isOutBoundary(newX, newY)) {
-            [this.x, this.y] = [newX, newY];
+    goNorth () {
+        if (!this.grid.isOutBoundaryY(this.y+1)) {
+            this.y = this.y + 1;
         }
     }
 
-    print () {
-        console.log("(" + this.x + "," + this.y + ") " + this.direction);
+    goWest () {
+        if (!this.grid.isOutBoundaryX(this.x - 1)) {
+            this.x = this.x - 1;
+        }
+    }
+
+    goSouth () {
+        if (!this.grid.isOutBoundaryY(this.y-1)) {
+            this.y = this.y - 1;
+        }
+    }
+
+    goEast () {
+        if (!this.grid.isOutBoundaryX(this.x + 1)) {
+            this.x = this.x + 1;
+        }
     }
 
     getLoc () {
         return {
             x: this.x,
             y: this.y,
-            direction: this.direction
+            direction: this.direction.toStr()
         };
     }
 }

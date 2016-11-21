@@ -4,8 +4,12 @@ class Grid {
         this.boundaryY = y || 0;
     }
 
-    isOutBoundary (x , y) {
-        return (x < 0 || y < 0 || x > this.boundaryX || y > this.boundaryY);
+    isOutBoundaryX (x) {
+        return (x < 0 || x > this.boundaryX);
+    }
+
+    isOutBoundaryY (y) {
+        return (y < 0 || y > this.boundaryY);
     }
 }
 

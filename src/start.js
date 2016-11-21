@@ -14,5 +14,5 @@ roversData.map((r) => {
     let rover = new Rover(pos.x, pos.y, r.direction, grid);
 
     rover.runCmds(r.cmds);
-    rover.print();
+    console.log(rover.getLoc());
 });
